@@ -9,15 +9,15 @@ class BaggoidRepository @Inject constructor(
     private val gameStateDao: Dao,
 ): GameStateRepositoryInterface {
 
-    override suspend fun insertGameState(gameState: GameState) {
-        gameStateDao.insertGameState(gameState)
+    override suspend fun saveGameState(gameState: GameState) {
+        gameStateDao.saveGameState(gameState)
     }
 
     override suspend fun deleteGameState(gameState: GameState) {
         gameStateDao.deleteGameState(gameState)
     }
 
-    override fun getGameState(): GameState {
+    override fun getGameState(): GameState? {
         return gameStateDao.getGameState()
     }
 }

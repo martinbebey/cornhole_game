@@ -1,20 +1,20 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.devtools.ksp'
-//apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.gc.baggoid"
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    namespace 'com.gc.baggoid'
 
     buildTypes {
         release {
@@ -46,18 +46,31 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation("com.google.dagger:hilt-android:2.48")
-    ksp("com.google.dagger:hilt-compiler:2.48")
-    //implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    ksp("androidx.hilt:hilt-compiler:1.0.0")
+    // Lifecycle
+    final lifecycleVersion = '2.5.1'
+    implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
 
-    implementation("androidx.room:room-runtime:2.5.2")
-    ksp("androidx.room:room-compiler:2.5.2")
-    implementation("androidx.room:room-ktx:2.5.2")
+    // JUnit
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+
+    // KSP (Kotlin Symbol Processing)
+    ksp "com.google.devtools.ksp:symbol-processing-api:$ksp_version"
+    ksp("androidx.room:room-compiler:2.6.1")
     ksp("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
 
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.51")
+    ksp("com.google.dagger:hilt-compiler:2.51")
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
+    // Room Database
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
     // App Compat
     implementation 'androidx.appcompat:appcompat:1.6.0'
@@ -71,14 +84,8 @@ dependencies {
     // Activity Ktx
     implementation 'androidx.activity:activity-ktx:1.6.1'
 
-    // Lifecycle
-    final lifecycleVersion = '2.5.1'
     implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
-
-    // JUnit
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
 
     // Core Testing
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
@@ -94,3 +101,109 @@ dependencies {
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.43.2")
     kspAndroidTest("com.google.dagger:hilt-android-compiler:2.48")
 }
+
+
+//apply plugin: 'com.android.application'
+//apply plugin: 'kotlin-android'
+//apply plugin: 'kotlin-kapt'
+//apply plugin: 'com.google.devtools.ksp'
+//apply plugin: 'dagger.hilt.android.plugin'
+//
+//android {
+//
+//    compileSdk 34
+//    defaultConfig {
+//        applicationId "com.gc.baggoid"
+//        minSdk 21
+//        targetSdk 34
+//        versionCode 1
+//        versionName "1.0"
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//    }
+//
+//    namespace 'com.gc.baggoid'
+//
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//    }
+//
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
+//
+//    kotlinOptions {
+//        jvmTarget = "1.8"
+//    }
+//
+//    buildFeatures {
+//        viewBinding true
+//    }
+//
+//    testOptions {
+//        animationsDisabled = true
+//        unitTests {
+//            includeAndroidResources = true
+//            returnDefaultValues = true
+//        }
+//    }
+//}
+//
+//ext {
+//    kotlin_version = '1.8.21'
+//    ksp_version = '1.8.0-1.0.9'
+//}
+//
+//dependencies {
+//
+//    ksp "com.google.devtools.ksp:symbol-processing-api:$ksp_version"
+//    implementation("com.google.dagger:hilt-android:2.51")
+//    ksp("com.google.dagger:hilt-compiler:2.51")
+//    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
+//    ksp("androidx.hilt:hilt-compiler:1.2.0")
+//
+//    implementation("androidx.room:room-runtime:2.6.1")
+//    ksp("androidx.room:room-compiler:2.6.1")
+//    implementation("androidx.room:room-ktx:2.6.1")
+//    ksp("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
+//
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//
+//    // App Compat
+//    implementation 'androidx.appcompat:appcompat:1.6.0'
+//
+//    // Kotlin
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+//
+//    // Core Ktx
+//    implementation 'androidx.core:core-ktx:1.9.0'
+//
+//    // Activity Ktx
+//    implementation 'androidx.activity:activity-ktx:1.6.1'
+//
+//    // Lifecycle
+//    final lifecycleVersion = '2.5.1'
+//    implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:$lifecycleVersion"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+//
+//    // JUnit
+//    testImplementation 'junit:junit:4.13.2'
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+//
+//    // Core Testing
+//    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+//
+//    // Mockk
+//    testImplementation 'io.mockk:mockk:1.13.3'
+//
+//    // Espresso
+//    androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1', {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
+//
+//    androidTestImplementation("com.google.dagger:hilt-android-testing:2.43.2")
+//    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.48")
+//}
