@@ -1,10 +1,16 @@
 package com.gc.baggoid.models
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+//@Entity(tableName = "game_state")
 data class GameState(
     val redTeamTotalScore: Int = 0,
     val blueTeamTotalScore: Int = 0,
     val currentRoundNumber: Int = 1,
     val currentRound: RoundState = RoundState(),
+
+//    @PrimaryKey
+    val id: Int  = 99
 ) {
     companion object {
         fun newGame() = GameState()

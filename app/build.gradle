@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
+    compileSdk 34 // Update to 34
 
-    compileSdk 33
     defaultConfig {
         applicationId "com.gc.baggoid"
         minSdk 21
-        targetSdk 33
+        targetSdk 34 // Update to 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -46,6 +46,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    //dagger
+    implementation 'com.google.dagger:dagger:2.44'    // Dagger dependency injection library
+    kapt 'com.google.dagger:dagger-compiler:2.44'      // Dagger annotation processor
+
     // App Compat
     implementation 'androidx.appcompat:appcompat:1.6.0'
 
@@ -57,6 +61,14 @@ dependencies {
 
     // Activity Ktx
     implementation 'androidx.activity:activity-ktx:1.6.1'
+
+    //room
+//    implementation 'androidx.room:room-common:2.6.1'
+//    implementation 'androidx.room:room-ktx:2.6.1'
+
+    implementation 'androidx.room:room-runtime:2.6.1'  // Room runtime
+    implementation 'androidx.room:room-ktx:2.6.1'      // Room KTX extensions
+    kapt 'androidx.room:room-compiler:2.6.1'           // Room annotation processor
 
     // Lifecycle
     final lifecycleVersion = '2.5.1'
