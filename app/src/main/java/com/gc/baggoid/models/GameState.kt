@@ -10,7 +10,7 @@ data class GameState(
     val currentRoundNumber: Int = 1,
     val currentRound: RoundState = RoundState(),
     @ColumnInfo(name = "current_team")
-    val currentTeam: Team = Team.RED,
+    var currentTeam: Team = Team.RED,
 
     @PrimaryKey
     val id: Int  = 99
@@ -48,6 +48,9 @@ data class GameState(
             BagStatus.IN_HAND -> currentRound.decrementBagsRemaining(team)
             else -> currentRound.modifyScore(team, -origin.points)
         }
+
+        if(team == Team.RED) currentTeam = Team.BLUE else currentTeam = Team.RED
+
         return copy(currentRound = round)
     }
 
