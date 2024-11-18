@@ -86,6 +86,10 @@ class GameViewModel @Inject constructor(
         saveGameStateToDatabase(_gameState.value)
     }
 
+    fun changeRulesMode(newMode: RulesMode) {
+        _gameState.value = _gameState.value?.copy(rulesMode = newMode)
+    }
+
     // Start a new game, resetting the state
     fun startNewGame() {
         val newGameState = GameState.newGame()

@@ -11,6 +11,8 @@ data class GameState(
     val currentRound: RoundState = RoundState(),
     @ColumnInfo(name = "current_team")
     var currentTeam: Team = Team.RED,
+    @ColumnInfo(name = "rules_mode")
+    var rulesMode: RulesMode = RulesMode.EXACT,
 
     @PrimaryKey
     val id: Int  = 99
@@ -21,13 +23,32 @@ data class GameState(
 
     val gameWinner: Team?
         get() {
-            return if (redTeamTotalScore >= SCORE_TO_WIN && redTeamTotalScore - blueTeamTotalScore >= WIN_BY)
-                Team.RED
-            else if (blueTeamTotalScore >= SCORE_TO_WIN && blueTeamTotalScore - redTeamTotalScore >= WIN_BY)
-                Team.BLUE
-            else
-                return null
+            return when (rulesMode) {
+                RulesMode.SIMPLE -> simpleWinCondition()
+                RulesMode.EXACT -> exact21WinCondition()
+            }
         }
+
+    private fun simpleWinCondition(): Team? {
+        // Use the existing rule: first team to 21 points with a 2-point lead wins
+        return if (redTeamTotalScore >= SCORE_TO_WIN && redTeamTotalScore - blueTeamTotalScore >= WIN_BY)
+            Team.RED
+        else if (blueTeamTotalScore >= SCORE_TO_WIN && blueTeamTotalScore - redTeamTotalScore >= WIN_BY)
+            Team.BLUE
+        else
+            null
+    }
+
+    private fun exact21WinCondition(): Team? {
+        // New rule: a team must reach exactly 21 points to win
+        return when {
+            redTeamTotalScore == 21 -> Team.RED
+            blueTeamTotalScore == 21 -> Team.BLUE
+//            redTeamTotalScore > 12 -> Team.RED
+//            blueTeamTotalScore > 12 -> Team.BLUE
+            else -> null
+        }
+    }
 
     fun newRound(): GameState {
         return copy(
@@ -70,6 +91,6 @@ data class GameState(
         if (currentRound.roundWinner == team) {
             teamTotalScore += currentRound.roundDelta
         }
-        return teamTotalScore
+        return if (rulesMode == RulesMode.EXACT && teamTotalScore > 21) 11 else teamTotalScore
     }
 }
