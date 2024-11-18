@@ -9,10 +9,13 @@ import androidx.room.Dao
 
 @Dao
 interface Dao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGameState(gameSte: GameState)
+    suspend fun saveGameState(gameSte: GameState)
+
     @Delete
     suspend fun deleteGameState(gameSte: GameState)
-    @Query("SELECT * FROM game_state WHERE id=99")
-    fun getGameState(): GameState
+
+    @Query("SELECT * FROM game_state WHERE id=99") //OR "SELECT * FROM game_state LIMIT 1"
+    fun getGameState(): GameState?
 }

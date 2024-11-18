@@ -1,9 +1,9 @@
-package com.gc.baggoid
+package com.gc.baggoid.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import com.gc.baggoid.databinding.ActivityGameBinding
+import com.gc.baggoid.R
 import com.gc.baggoid.databinding.ActivityRulesBinding
 
 class RulesActivity : AppCompatActivity(R.layout.activity_rules) {

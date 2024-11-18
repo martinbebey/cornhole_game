@@ -39,6 +39,10 @@ class FieldView(context: Context, attrs: AttributeSet) : RelativeLayout(context,
                 Team.BLUE
             }
 
+    fun setCurrentTeam(team: Team) {
+        currentTeam = team
+    }
+
     interface BagListener {
         fun onBagMoved(bagMovedEvent: BagMovedEvent)
     }
@@ -78,7 +82,7 @@ class FieldView(context: Context, attrs: AttributeSet) : RelativeLayout(context,
         }
         bags.clear()
         newBagsAllowed = true
-        currentTeam = Team.RED
+//        currentTeam = Team.RED
     }
 
     @SuppressLint("ClickableViewAccessibility")

@@ -1,4 +1,4 @@
-package com.gc.baggoid
+package com.gc.baggoid.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,9 +7,13 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.gc.baggoid.viewmodel.GameViewModel
+import com.gc.baggoid.R
 import com.gc.baggoid.databinding.ActivityGameBinding
 import com.gc.baggoid.models.*
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class GameActivity : AppCompatActivity(R.layout.activity_game) {
 
     private val binding: ActivityGameBinding by lazy { ActivityGameBinding.inflate(layoutInflater) }
@@ -50,6 +54,10 @@ class GameActivity : AppCompatActivity(R.layout.activity_game) {
         binding.redRoundScoreView.setBagsPerRound(BAGS_PER_ROUND)
         binding.blueRoundScoreView.setBagsPerRound(BAGS_PER_ROUND)
         binding.fieldView.bagListener = viewModel
+
+        viewModel.currentTeam.observe(this) { currentTeam ->
+            binding.fieldView.setCurrentTeam(currentTeam)
+        }
     }
 
     private fun setupStateObservers() {

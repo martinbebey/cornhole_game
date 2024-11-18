@@ -1,4 +1,5 @@
 package com.gc.baggoid.models
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -8,6 +9,8 @@ data class GameState(
     val blueTeamTotalScore: Int = 0,
     val currentRoundNumber: Int = 1,
     val currentRound: RoundState = RoundState(),
+    @ColumnInfo(name = "current_team")
+    val currentTeam: Team = Team.RED,
 
     @PrimaryKey
     val id: Int  = 99

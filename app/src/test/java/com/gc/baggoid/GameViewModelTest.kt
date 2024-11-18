@@ -3,6 +3,7 @@ package com.gc.baggoid
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.gc.baggoid.models.*
+import com.gc.baggoid.viewmodel.GameViewModel
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifySequence
