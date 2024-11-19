@@ -26,6 +26,11 @@ class GameActivity : AppCompatActivity(R.layout.activity_game) {
         setupStateObservers()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadRulesMode()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_scoring, menu)
         return true
@@ -36,10 +41,17 @@ class GameActivity : AppCompatActivity(R.layout.activity_game) {
             showRules()
             true
         }
+
         R.id.menu_item_restart -> {
             viewModel.startNewGame()
             true
         }
+
+        R.id.menu_item_settings -> {
+            showSettings()
+            true
+        }
+
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -58,6 +70,7 @@ class GameActivity : AppCompatActivity(R.layout.activity_game) {
         viewModel.currentTeam.observe(this) { currentTeam ->
             binding.fieldView.setCurrentTeam(currentTeam)
         }
+//        viewModel.gameState.value?.let { viewModel.gameState.value!!.setRulesMode(it.rulesMode) }
     }
 
     private fun setupStateObservers() {
@@ -128,5 +141,9 @@ class GameActivity : AppCompatActivity(R.layout.activity_game) {
 
     private fun showRules() {
         startActivity(Intent(this, RulesActivity::class.java))
+    }
+
+    private fun showSettings() {
+        startActivity(Intent(this, SettingsActivity::class.java))
     }
 }

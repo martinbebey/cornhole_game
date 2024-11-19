@@ -4,15 +4,16 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdk 34 // Update to 34
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.gc.baggoid"
         minSdk 21
-        targetSdk 34 // Update to 34
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true  // Enable MultiDex if needed
     }
 
     buildTypes {
@@ -48,17 +49,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Dagger Hilt Android Dependency
-    implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation "com.google.dagger:hilt-android:2.44"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'  // Update constraintlayout version
 
-    // Hilt Lifecycle ViewModel (for ViewModel injection)
-//    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0"
-
-    // Hilt compiler (for annotation processing)
-    kapt "com.google.dagger:hilt-compiler:$hilt_version"
-
-    // Dagger
-    implementation 'com.google.dagger:dagger:2.44'    // Dagger dependency injection library
-    kapt 'com.google.dagger:dagger-compiler:2.44'      // Dagger annotation processor
+    // Hilt compiler
+    kapt "com.google.dagger:hilt-compiler:2.44"
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.8'
@@ -67,7 +62,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.0'
 
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0"  // Use the latest stable version
 
     // Core Ktx
     implementation 'androidx.core:core-ktx:1.9.0'
@@ -76,12 +71,9 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.6.1'
 
     // Room
-//    implementation 'androidx.room:room-common:2.6.1'
-//    implementation 'androidx.room:room-ktx:2.6.1'
-
-    implementation 'androidx.room:room-runtime:2.6.1'  // Room runtime
-    implementation 'androidx.room:room-ktx:2.6.1'      // Room KTX extensions
-    kapt 'androidx.room:room-compiler:2.6.1'           // Room annotation processor
+    implementation 'androidx.room:room-runtime:2.6.1'
+    implementation 'androidx.room:room-ktx:2.6.1'
+    kapt 'androidx.room:room-compiler:2.6.1'
 
     // Lifecycle
     final lifecycleVersion = '2.5.1'
@@ -102,4 +94,8 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    // MultiDex for handling more than 64k methods
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.android.tools:desugar_jdk_libs:1.1.5'  // Enable desugaring for Java 8+ features
 }

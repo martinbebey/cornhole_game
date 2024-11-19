@@ -1,4 +1,5 @@
 package com.gc.baggoid.models
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,8 +12,6 @@ data class GameState(
     val currentRound: RoundState = RoundState(),
     @ColumnInfo(name = "current_team")
     var currentTeam: Team = Team.RED,
-    @ColumnInfo(name = "rules_mode")
-    var rulesMode: RulesMode = RulesMode.EXACT,
 
     @PrimaryKey
     val id: Int  = 99
@@ -21,13 +20,19 @@ data class GameState(
         fun newGame() = GameState()
     }
 
-    val gameWinner: Team?
-        get() {
-            return when (rulesMode) {
-                RulesMode.SIMPLE -> simpleWinCondition()
-                RulesMode.EXACT -> exact21WinCondition()
-            }
+//    var ruleMode: RulesMode = RulesMode.SIMPLE
+//
+//    fun setRules(rules: RulesMode){
+//        ruleMode = rules
+//    }
+
+    // Game winner based on rulesMode (rulesMode will now be passed as an argument to the method)
+    fun gameWinner(rulesMode: RulesMode): Team? {
+        return when (rulesMode) {
+            RulesMode.SIMPLE -> simpleWinCondition()
+            RulesMode.EXACT -> exact21WinCondition()
         }
+    }
 
     private fun simpleWinCondition(): Team? {
         // Use the existing rule: first team to 21 points with a 2-point lead wins
@@ -44,16 +49,14 @@ data class GameState(
         return when {
             redTeamTotalScore == 21 -> Team.RED
             blueTeamTotalScore == 21 -> Team.BLUE
-//            redTeamTotalScore > 12 -> Team.RED
-//            blueTeamTotalScore > 12 -> Team.BLUE
             else -> null
         }
     }
 
-    fun newRound(): GameState {
+    fun newRound(rulesMode: RulesMode): GameState {
         return copy(
-            redTeamTotalScore = calculateTotalScore(Team.RED),
-            blueTeamTotalScore = calculateTotalScore(Team.BLUE),
+            redTeamTotalScore = calculateTotalScore(Team.RED, rulesMode),
+            blueTeamTotalScore = calculateTotalScore(Team.BLUE, rulesMode),
             currentRoundNumber = currentRoundNumber + 1,
             currentRound = RoundState(),
         )
@@ -83,7 +86,7 @@ data class GameState(
         return copy(currentRound = round)
     }
 
-    private fun calculateTotalScore(team: Team): Int {
+    private fun calculateTotalScore(team: Team, rulesMode: RulesMode): Int {
         var teamTotalScore = when (team) {
             Team.RED -> redTeamTotalScore
             Team.BLUE -> blueTeamTotalScore
@@ -91,6 +94,10 @@ data class GameState(
         if (currentRound.roundWinner == team) {
             teamTotalScore += currentRound.roundDelta
         }
-        return if (rulesMode == RulesMode.EXACT && teamTotalScore > 21) 11 else teamTotalScore
+
+        return when (rulesMode) {
+            RulesMode.SIMPLE -> teamTotalScore
+            RulesMode.EXACT -> if (teamTotalScore > 21) 11 else teamTotalScore
+        }
     }
 }

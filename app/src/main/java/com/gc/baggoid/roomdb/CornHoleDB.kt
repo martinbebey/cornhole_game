@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gc.baggoid.models.GameState
 import com.gc.baggoid.utils.RoundStateConverter
 
-@Database(entities = [GameState::class], version = 4)
+@Database(entities = [GameState::class], version = 7)
 @TypeConverters(RoundStateConverter::class)
 abstract class CornHoleDB: RoomDatabase() {
     abstract fun gameStateDao(): Dao

@@ -20,6 +20,8 @@
 
         <activity android:name=".ui.RulesActivity" />
 
+        <activity android:name=".ui.SettingsActivity" />
+
     </application>
 
 </manifest>
