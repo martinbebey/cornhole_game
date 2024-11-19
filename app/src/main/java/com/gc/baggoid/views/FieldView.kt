@@ -82,7 +82,6 @@ class FieldView(context: Context, attrs: AttributeSet) : RelativeLayout(context,
         }
         bags.clear()
         newBagsAllowed = true
-//        currentTeam = Team.RED
     }
 
     @SuppressLint("ClickableViewAccessibility")

@@ -2,20 +2,16 @@ package com.gc.baggoid.ui
 
 import android.os.Bundle
 import android.widget.Button
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.gc.baggoid.R
 import com.gc.baggoid.models.RulesMode
-import com.gc.baggoid.viewmodel.GameViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
 
-    private val gameViewModel: GameViewModel by viewModels() // ViewModel with Hilt
     private val sharedPreferences by lazy { getSharedPreferences("app_preferences", MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +21,9 @@ class SettingsActivity : AppCompatActivity() {
         val rulesModeRadioGroup: RadioGroup = findViewById(R.id.rulesModeRadioGroup)
         val saveButton: Button = findViewById(R.id.saveButton)
 
-        // Load the current rule mode from SharedPreferences or ViewModel
+        // Load the current rule mode from SharedPreferences
         val savedRuleMode = sharedPreferences.getString("rules_mode", RulesMode.SIMPLE.name)
+
         when (savedRuleMode) {
             RulesMode.SIMPLE.name -> rulesModeRadioGroup.check(R.id.radioSimpleMode)
             RulesMode.EXACT.name -> rulesModeRadioGroup.check(R.id.radioExactMode)
@@ -45,10 +42,7 @@ class SettingsActivity : AppCompatActivity() {
             // Save the selected rules mode to SharedPreferences
             sharedPreferences.edit().putString("rules_mode", newMode.name).apply()
 
-            // Save the selected rules mode to the ViewModel
-            gameViewModel.changeRulesMode(newMode)
-
-            // Optionally, show a confirmation message
+            // Show a confirmation message
             Toast.makeText(this, "Game rule updated!", Toast.LENGTH_SHORT).show()
 
             // Close the settings screen

@@ -8,12 +8,9 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gc.baggoid.models.*
-import com.gc.baggoid.repo.BaggoidRepository
 import com.gc.baggoid.repo.GameStateRepositoryInterface
-import com.gc.baggoid.repo.Graph
 import com.gc.baggoid.views.FieldView
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,16 +28,13 @@ class GameViewModel @Inject constructor(
     private val _gameState: MutableLiveData<GameState> = MutableLiveData()
     val gameState: LiveData<GameState> = _gameState
 
-    private val _currentTeam = MutableLiveData<Team>(Team.RED)
+    // LiveData to hold the team to place a bag in the current turn
+    private val _currentTeam = MutableLiveData(Team.RED)
     val currentTeam: LiveData<Team> get() = _currentTeam
 
-    // Flag to indicate if the game state is being loaded from the database
-    private val _isGameStateLoading = MutableLiveData<Boolean>(true)
-    val isGameStateLoading: LiveData<Boolean> = _isGameStateLoading
-
+    // LiveData to hold the game rule
     private val _rulesMode = MutableLiveData<RulesMode>()
     val rulesMode: LiveData<RulesMode> get() = _rulesMode
-
 
     // Initialize the game state by loading it from the database or creating a new one
     init {
@@ -48,29 +42,25 @@ class GameViewModel @Inject constructor(
         _rulesMode.value = RulesMode.valueOf(savedRuleMode ?: RulesMode.SIMPLE.name)
 
         viewModelScope.launch(Dispatchers.IO) {
+
             // Try to load the game state from the database
             val savedGameState = repository.getGameState()
-            _isGameStateLoading.postValue(false)
 
             // If there's a saved game state, use it; otherwise, create a new one
             val gameStateToUse = savedGameState ?: GameState.newGame()
 
-            // Post the game state to LiveData (don't include rulesMode in the game state)
+            // Post the game state to LiveData
             _gameState.postValue(gameStateToUse)
 
             // Set the current team based on the saved game state, or default to RED
             val savedCurrentTeam = savedGameState?.currentTeam ?: Team.RED
             _currentTeam.postValue(savedCurrentTeam)
+
         }
     }
 
-    // Derived LiveData for UI updates
     val clearBags: LiveData<Boolean> = Transformations.map(gameState) { gameState ->
-        if (_isGameStateLoading.value == true) {
-            false  // Don't clear bags while loading
-        } else {
-            gameState.currentRound.isRoundNew  // Clear bags only if the round is new
-        }
+        gameState.currentRound.isRoundNew
     }
 
     val roundOverState: LiveData<RoundOverState?> = Transformations.map(gameState) { gameState ->
@@ -84,7 +74,7 @@ class GameViewModel @Inject constructor(
     }
 
     val gameOverState: LiveData<GameOverState?> = Transformations.map(gameState) { gameState ->
-        val currentRulesMode = rulesMode.value ?: RulesMode.SIMPLE // Get rulesMode safely
+        val currentRulesMode = rulesMode.value ?: RulesMode.SIMPLE
         gameState.gameWinner(currentRulesMode)?.let { gameWinner ->
             GameOverState(
                 gameWinner,
@@ -94,42 +84,20 @@ class GameViewModel @Inject constructor(
         }
     }
 
-
-    // Handle bag moved event (updates game state)
     override fun onBagMoved(bagMovedEvent: BagMovedEvent) {
         _gameState.value = _gameState.value?.processEvent(bagMovedEvent)
         saveGameStateToDatabase(_gameState.value)
     }
 
+    // Fetches the selected game rule from sharedPreferences
     fun loadRulesMode() {
+
         // Retrieve the saved rules mode from SharedPreferences
         val savedRuleMode = sharedPreferences.getString("rules_mode", RulesMode.SIMPLE.name)
 
         // Update the LiveData with the loaded rules mode, defaulting to SIMPLE if null
         _rulesMode.value = RulesMode.valueOf(savedRuleMode ?: RulesMode.SIMPLE.name)
-    }
 
-    // Method to change the rules mode
-    fun changeRulesMode(newMode: RulesMode) {
-        Log.d("GameViewModel", "Updating rules mode to: $newMode")
-
-        // Save the new rules mode in SharedPreferences
-        sharedPreferences.edit().putString("rules_mode", newMode.name).apply()
-        _rulesMode.value = newMode
-//        _gameState.value?.setRules(newMode)
-
-        // No need to update GameState's rulesMode because we don't store it in the database anymore.
-        // However, we can update the current LiveData state to force any UI updates if necessary.
-        _gameState.value?.let {
-            // Trigger a UI update if needed (this step is optional depending on your needs)
-            _gameState.value = it.copy() // This does nothing significant in terms of state, but could trigger observers.
-        }
-    }
-
-    // Calculate the game winner based on the current rules mode
-    fun getGameWinner(): Team? {
-        val rulesMode = RulesMode.valueOf(sharedPreferences.getString("rules_mode", RulesMode.SIMPLE.name) ?: RulesMode.SIMPLE.name)
-        return _gameState.value?.gameWinner(rulesMode)  // Use the rulesMode from SharedPreferences
     }
 
     // Start a new game, resetting the state

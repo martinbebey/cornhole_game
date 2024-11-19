@@ -2,7 +2,6 @@ package com.gc.baggoid.dependencyInjection
 
 import android.app.Application
 import android.content.Context
-import androidx.room.Room
 import com.gc.baggoid.repo.BaggoidRepository
 import com.gc.baggoid.repo.GameStateRepositoryInterface
 import com.gc.baggoid.roomdb.CornHoleDB

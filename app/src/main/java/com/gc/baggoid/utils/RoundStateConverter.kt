@@ -21,11 +21,13 @@ class RoundStateConverter {
         return gson.fromJson(value, RoundState::class.java)
     }
 
+    // Convert Team object to JSON int
     @TypeConverter
     fun fromTeam(team: Team): Int {
         return team.ordinal  // Store the enum ordinal (0 = RED, 1 = BLUE)
     }
 
+    // Convert JSON int back to Team object
     @TypeConverter
     fun toTeam(ordinal: Int): Team {
         return Team.values()[ordinal]

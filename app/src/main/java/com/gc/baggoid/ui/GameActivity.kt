@@ -70,7 +70,6 @@ class GameActivity : AppCompatActivity(R.layout.activity_game) {
         viewModel.currentTeam.observe(this) { currentTeam ->
             binding.fieldView.setCurrentTeam(currentTeam)
         }
-//        viewModel.gameState.value?.let { viewModel.gameState.value!!.setRulesMode(it.rulesMode) }
     }
 
     private fun setupStateObservers() {

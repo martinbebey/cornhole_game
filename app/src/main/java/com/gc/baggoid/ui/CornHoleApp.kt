@@ -6,8 +6,10 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class CornHoleApp:Application() {
+
     override fun onCreate() {
         super.onCreate()
         Graph.provide(this)
     }
+
 }

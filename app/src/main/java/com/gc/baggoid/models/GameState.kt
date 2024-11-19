@@ -20,13 +20,7 @@ data class GameState(
         fun newGame() = GameState()
     }
 
-//    var ruleMode: RulesMode = RulesMode.SIMPLE
-//
-//    fun setRules(rules: RulesMode){
-//        ruleMode = rules
-//    }
-
-    // Game winner based on rulesMode (rulesMode will now be passed as an argument to the method)
+    // Game winner based on rulesMode
     fun gameWinner(rulesMode: RulesMode): Team? {
         return when (rulesMode) {
             RulesMode.SIMPLE -> simpleWinCondition()
@@ -34,8 +28,8 @@ data class GameState(
         }
     }
 
+    // First team to 21 points with a 2-point lead wins
     private fun simpleWinCondition(): Team? {
-        // Use the existing rule: first team to 21 points with a 2-point lead wins
         return if (redTeamTotalScore >= SCORE_TO_WIN && redTeamTotalScore - blueTeamTotalScore >= WIN_BY)
             Team.RED
         else if (blueTeamTotalScore >= SCORE_TO_WIN && blueTeamTotalScore - redTeamTotalScore >= WIN_BY)
@@ -44,11 +38,11 @@ data class GameState(
             null
     }
 
+    // Team must reach exactly 21 points to win
     private fun exact21WinCondition(): Team? {
-        // New rule: a team must reach exactly 21 points to win
         return when {
-            redTeamTotalScore == 21 -> Team.RED
-            blueTeamTotalScore == 21 -> Team.BLUE
+            redTeamTotalScore == SCORE_TO_WIN -> Team.RED
+            blueTeamTotalScore == SCORE_TO_WIN -> Team.BLUE
             else -> null
         }
     }
@@ -73,7 +67,7 @@ data class GameState(
             else -> currentRound.modifyScore(team, -origin.points)
         }
 
-        if(team == Team.RED) currentTeam = Team.BLUE else currentTeam = Team.RED
+        currentTeam = if(team == Team.RED) Team.BLUE else Team.RED
 
         return copy(currentRound = round)
     }
@@ -86,18 +80,20 @@ data class GameState(
         return copy(currentRound = round)
     }
 
+    // Calculates total score based on the current game rule
     private fun calculateTotalScore(team: Team, rulesMode: RulesMode): Int {
         var teamTotalScore = when (team) {
             Team.RED -> redTeamTotalScore
             Team.BLUE -> blueTeamTotalScore
         }
+
         if (currentRound.roundWinner == team) {
             teamTotalScore += currentRound.roundDelta
         }
 
         return when (rulesMode) {
             RulesMode.SIMPLE -> teamTotalScore
-            RulesMode.EXACT -> if (teamTotalScore > 21) 11 else teamTotalScore
+            RulesMode.EXACT -> if (teamTotalScore > SCORE_TO_WIN) EXACTLY_21_RULE_SCORE_RESET_VALUE else teamTotalScore
         }
     }
 }

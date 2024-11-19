@@ -6,6 +6,9 @@
     <string name="blue">Blue</string>
     <string name="round">Round %d</string>
 
+    <!-- Database -->
+    <string name="db_file_name">cornhole.db</string>
+
     <!-- Menu items -->
     <string name="rules">Rules</string>
     <string name="start_new_game">Start New Game</string>
