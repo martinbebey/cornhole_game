@@ -39,29 +39,29 @@ stages:
   - release
   - cleanup
 
-variables:
-  ANDROID_SDK_ROOT: "$CI_PROJECT_DIR/android-sdk"
-
-before_script:
-  - apt-get update
-  - apt-get install -y openjdk-17-jdk
-  - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-  - export PATH=$JAVA_HOME/bin:$PATH
-  - java -version
-  - echo "Installing Android SDK..."
-  - mkdir -p $ANDROID_SDK_ROOT
-  - cd $ANDROID_SDK_ROOT
-  - wget https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip
-  - unzip commandlinetools-linux-6858069_latest.zip
-  - rm -rf $ANDROID_SDK_ROOT/platform-tools  # Clean up existing installation
-  - yes | $ANDROID_SDK_ROOT/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --install "platform-tools" "platforms;android-30" "build-tools;30.0.3" || true
-  - export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
-  - cd ..
-  - echo "Current directory:"
-  - pwd
-  - echo "Listing contents:"
-  - ls -la
-  - chmod +x gradlew  # Ensure gradlew is executable
+#variables:
+#  ANDROID_SDK_ROOT: "$CI_PROJECT_DIR/android-sdk"
+#
+#before_script:
+#  - apt-get update
+#  - apt-get install -y openjdk-17-jdk
+#  - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+#  - export PATH=$JAVA_HOME/bin:$PATH
+#  - java -version
+#  - echo "Installing Android SDK..."
+#  - mkdir -p $ANDROID_SDK_ROOT
+#  - cd $ANDROID_SDK_ROOT
+#  - wget https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip
+#  - unzip commandlinetools-linux-6858069_latest.zip
+#  - rm -rf $ANDROID_SDK_ROOT/platform-tools  # Clean up existing installation
+#  - yes | $ANDROID_SDK_ROOT/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --install "platform-tools" "platforms;android-30" "build-tools;30.0.3" || true
+#  - export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
+#  - cd ..
+#  - echo "Current directory:"
+#  - pwd
+#  - echo "Listing contents:"
+#  - ls -la
+#  - chmod +x gradlew  # Ensure gradlew is executable
 
 # Build job (compile APK)
 build-job:
