@@ -39,8 +39,8 @@ class GameStateTests {
         gameState = gameState.processEvent(BagMovedEvent(BagStatus.IN_HAND, BagStatus.OFF_BOARD, Team.BLUE))
         gameState = gameState.processEvent(BagMovedEvent(BagStatus.IN_HAND, BagStatus.IN_HOLE, Team.RED))
         gameState = gameState.processEvent(BagMovedEvent(BagStatus.IN_HAND, BagStatus.OFF_BOARD, Team.BLUE))
-        gameState = gameState.newRound()
-        assertEquals(null, gameState.gameWinner)
+        gameState = gameState.newRound(RulesMode.SIMPLE)
+        assertEquals(null, gameState.gameWinner(RulesMode.SIMPLE))
 
         gameState = gameState.processEvent(BagMovedEvent(BagStatus.IN_HAND, BagStatus.IN_HOLE, Team.RED))
         gameState = gameState.processEvent(BagMovedEvent(BagStatus.IN_HAND, BagStatus.OFF_BOARD, Team.BLUE))
@@ -50,8 +50,8 @@ class GameStateTests {
         gameState = gameState.processEvent(BagMovedEvent(BagStatus.IN_HAND, BagStatus.OFF_BOARD, Team.BLUE))
         gameState = gameState.processEvent(BagMovedEvent(BagStatus.IN_HAND, BagStatus.IN_HOLE, Team.RED))
         gameState = gameState.processEvent(BagMovedEvent(BagStatus.IN_HAND, BagStatus.OFF_BOARD, Team.BLUE))
-        gameState = gameState.newRound()
-        assertEquals(Team.RED, gameState.gameWinner)
+        gameState = gameState.newRound(RulesMode.SIMPLE)
+        assertEquals(Team.RED, gameState.gameWinner(RulesMode.SIMPLE))
     }
 
     @Test
@@ -104,7 +104,7 @@ class GameStateTests {
         assertEquals(0, gameState.redTeamTotalScore)
         assertEquals(0, gameState.blueTeamTotalScore)
 
-        gameState = gameState.newRound()
+        gameState = gameState.newRound(RulesMode.SIMPLE)
 
         assertEquals(12, gameState.redTeamTotalScore)
         assertEquals(0, gameState.blueTeamTotalScore)

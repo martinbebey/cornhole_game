@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gc.baggoid">
+
+    <!-- Instrumentation needs to be directly under <manifest> -->
+    <instrumentation
+        android:name="androidx.test.runner.AndroidJUnitRunner"
+        android:targetPackage="com.gc.baggoid"
+        android:label="Test Application"/>
+
+    <application
+        android:name="dagger.hilt.android.testing.HiltTestApplication"
+        android:theme="@android:style/Theme.DeviceDefault">
+        <!-- other application components like activities -->
+    </application>
+
+</manifest>

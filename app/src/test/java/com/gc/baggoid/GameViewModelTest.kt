@@ -1,24 +1,73 @@
 package com.gc.baggoid
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.gc.baggoid.models.*
+import com.gc.baggoid.repo.GameStateRepositoryInterface
 import com.gc.baggoid.viewmodel.GameViewModel
+import dagger.hilt.android.testing.HiltAndroidRule
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifySequence
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import javax.inject.Inject
 
 class GameViewModelTest {
 
+    // Inject the necessary dependencies using Hilt
+    @Inject
+    lateinit var context: Context
+
+    @Inject
+    lateinit var repository: GameStateRepositoryInterface
+
+    // LiveData observer to check the changes
+    @Mock
+    lateinit var gameStateObserver: Observer<GameState>
+
+    @Mock
+    lateinit var currentTeamObserver: Observer<Team>
+
+    @Mock
+    lateinit var rulesModeObserver: Observer<RulesMode>
+
+    private lateinit var viewModel: GameViewModel
+
+    // Rule to allow LiveData to execute in the background
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
+    @Before
+    fun setUp() = runBlocking{
+        // Initialize Hilt injection
+        // You should have a Dagger Hilt test rule here to inject dependencies
+        hiltRule.inject()
+
+        // Create the ViewModel with injected dependencies
+        viewModel = GameViewModel(context, repository)
+
+        // Mock repository behavior for getGameState() and saveGameState()
+        `when`(repository.getGameState()).thenReturn(GameState.newGame())
+
+        // Observe LiveData
+        viewModel.gameState.observeForever(gameStateObserver)
+        viewModel.currentTeam.observeForever(currentTeamObserver)
+        viewModel.rulesMode.observeForever(rulesModeObserver)
+    }
+
     @Test
     fun testNoEvents() {
-        val viewModel = GameViewModel()
+//        val viewModel = GameViewModel()
 
         assertEquals(1, viewModel.gameState.value?.currentRoundNumber)
         assertEquals(BAGS_PER_ROUND, viewModel.gameState.value?.currentRound?.redTeamBagsRemaining)
@@ -33,7 +82,7 @@ class GameViewModelTest {
 
     @Test
     fun testResetGame() {
-        val viewModel = GameViewModel()
+//        val viewModel = GameViewModel()
 
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.ON_BOARD, Team.RED))
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.ON_BOARD, Team.BLUE))
@@ -54,7 +103,7 @@ class GameViewModelTest {
 
     @Test
     fun testDragBag() {
-        val viewModel = GameViewModel()
+//        val viewModel = GameViewModel()
 
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.ON_BOARD, Team.RED))
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.ON_BOARD, Team.BLUE))
@@ -76,7 +125,7 @@ class GameViewModelTest {
 
     @Test
     fun testNewRound() {
-        val viewModel = GameViewModel()
+//        val viewModel = GameViewModel()
         val roundOverState = mockk<Observer<RoundOverState?>>(relaxed = true)
         viewModel.roundOverState.observeForever(roundOverState)
 
@@ -119,7 +168,7 @@ class GameViewModelTest {
 
     @Test
     fun testWinning() {
-        val viewModel = GameViewModel()
+//        val viewModel = GameViewModel()
 
         // Round 1
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.IN_HOLE, Team.RED))
@@ -141,7 +190,7 @@ class GameViewModelTest {
         assertEquals(false, viewModel.gameState.value?.currentRound?.isRoundNew)
         assertEquals(true, viewModel.gameState.value?.currentRound?.isRoundOver)
 
-        assertEquals(null, viewModel.gameState.value?.gameWinner)
+        assertEquals(null, viewModel.gameState.value?.gameWinner(rulesMode = RulesMode.SIMPLE))
 
         // Round 2
         viewModel.startNewRound()
@@ -166,7 +215,7 @@ class GameViewModelTest {
         assertEquals(true, viewModel.gameState.value?.currentRound?.isRoundOver)
 
         viewModel.startNewRound()
-        assertEquals(Team.RED, viewModel.gameState.value?.gameWinner)
+        assertEquals(Team.RED, viewModel.gameState.value?.gameWinner(RulesMode.SIMPLE))
 
         val gameOverState = mockk<Observer<GameOverState?>>(relaxed = true)
         viewModel.gameOverState.observeForever(gameOverState)
@@ -178,7 +227,7 @@ class GameViewModelTest {
 
     @Test
     fun testClearBags() {
-        val viewModel = GameViewModel()
+//        val viewModel = GameViewModel()
 
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.IN_HOLE, Team.RED))
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.OFF_BOARD, Team.BLUE))

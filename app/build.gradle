@@ -12,8 +12,9 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"  // Correct test instrumentation runner
         multiDexEnabled true  // Enable MultiDex if needed
+        testApplicationId "com.gc.baggoid"
     }
 
     buildTypes {
@@ -24,12 +25,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -37,10 +38,15 @@ android {
     }
 
     testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
         animationsDisabled = true
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true
+        }
+
+        unitTests.all {
+            useJUnitPlatform()  // Use JUnit Platform to avoid issues
         }
     }
 }
@@ -49,11 +55,16 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Dagger Hilt Android Dependency
-    implementation "com.google.dagger:hilt-android:2.44"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'  // Update constraintlayout version
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.test.ext:junit-ktx:1.2.1'
+    testImplementation 'com.google.dagger:hilt-android-testing:2.48'
+    androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.48'
 
     // Hilt compiler
-    kapt "com.google.dagger:hilt-compiler:2.44"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    androidTestImplementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.8'
@@ -80,24 +91,29 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
 
-    // JUnit
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    // JUnit 4 for unit tests
+    testImplementation 'junit:junit:4.13.2'  // For local unit tests
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+
+    // AndroidX JUnit4 for instrumentation tests
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'  // For Android instrumentation tests
 
     // Core Testing
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
 
-    // Mockk
+    // Mockk for testing
     testImplementation 'io.mockk:mockk:1.13.3'
     testImplementation 'org.mockito:mockito-core:4.0.0'
     testImplementation 'org.mockito:mockito-inline:4.0.0'
 
-    // Espresso
+    // Espresso for UI testing
     androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
     // MultiDex for handling more than 64k methods
     implementation 'androidx.multidex:multidex:2.0.1'
+
+    // Desugar for JDK 8+ support
     implementation 'com.android.tools:desugar_jdk_libs:1.1.5'
 }
