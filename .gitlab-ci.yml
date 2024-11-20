@@ -30,6 +30,7 @@
 #    - echo "Deploying application..."
 #    - echo "Application successfully deployed."
 
+
 stages:
   - build
   - test
