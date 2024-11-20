@@ -57,7 +57,6 @@ class GameVMTest {
     @Before
     fun setUp() = runBlocking{
         // Initialize Hilt injection
-        // You should have a Dagger Hilt test rule here to inject dependencies
         hiltRule.inject()
 
         // Create the ViewModel with injected dependencies
@@ -74,7 +73,7 @@ class GameVMTest {
 
     @Test
     fun testInitialGameState() {
-        // Verify initial state (this can be customized based on your initial setup)
+
         verify(gameStateObserver).onChanged(any())
         verify(currentTeamObserver).onChanged(Team.RED)
         verify(rulesModeObserver).onChanged(RulesMode.SIMPLE)
@@ -89,7 +88,6 @@ class GameVMTest {
         verify(gameStateObserver).onChanged(any())
         verify(currentTeamObserver).onChanged(Team.RED)
 
-        // Optionally, verify that the saveGameStateToDatabase was called
         verify(repository).saveGameState(any())
     }
 
@@ -101,7 +99,6 @@ class GameVMTest {
         // Verify that the game state is updated
         verify(gameStateObserver).onChanged(any())
 
-        // Optionally, verify that the saveGameStateToDatabase was called
         verify(repository).saveGameState(any())
     }
 
@@ -125,7 +122,6 @@ class GameVMTest {
         // Verify that the game state was updated
         verify(gameStateObserver).onChanged(any())
 
-        // Optionally, verify that the saveGameStateToDatabase was called
         verify(repository).saveGameState(any())
     }
 }

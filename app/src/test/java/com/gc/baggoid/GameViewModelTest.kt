@@ -21,14 +21,12 @@ import javax.inject.Inject
 
 class GameViewModelTest {
 
-    // Inject the necessary dependencies using Hilt
     @Inject
     lateinit var context: Context
 
     @Inject
     lateinit var repository: GameStateRepositoryInterface
 
-    // LiveData observer to check the changes
     @Mock
     lateinit var gameStateObserver: Observer<GameState>
 
@@ -40,7 +38,6 @@ class GameViewModelTest {
 
     private lateinit var viewModel: GameViewModel
 
-    // Rule to allow LiveData to execute in the background
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -50,7 +47,6 @@ class GameViewModelTest {
     @Before
     fun setUp() = runBlocking{
         // Initialize Hilt injection
-        // You should have a Dagger Hilt test rule here to inject dependencies
         hiltRule.inject()
 
         // Create the ViewModel with injected dependencies
@@ -67,7 +63,6 @@ class GameViewModelTest {
 
     @Test
     fun testNoEvents() {
-//        val viewModel = GameViewModel()
 
         assertEquals(1, viewModel.gameState.value?.currentRoundNumber)
         assertEquals(BAGS_PER_ROUND, viewModel.gameState.value?.currentRound?.redTeamBagsRemaining)
@@ -82,7 +77,6 @@ class GameViewModelTest {
 
     @Test
     fun testResetGame() {
-//        val viewModel = GameViewModel()
 
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.ON_BOARD, Team.RED))
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.ON_BOARD, Team.BLUE))
@@ -103,7 +97,6 @@ class GameViewModelTest {
 
     @Test
     fun testDragBag() {
-//        val viewModel = GameViewModel()
 
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.ON_BOARD, Team.RED))
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.ON_BOARD, Team.BLUE))
@@ -125,7 +118,6 @@ class GameViewModelTest {
 
     @Test
     fun testNewRound() {
-//        val viewModel = GameViewModel()
         val roundOverState = mockk<Observer<RoundOverState?>>(relaxed = true)
         viewModel.roundOverState.observeForever(roundOverState)
 
@@ -168,7 +160,6 @@ class GameViewModelTest {
 
     @Test
     fun testWinning() {
-//        val viewModel = GameViewModel()
 
         // Round 1
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.IN_HOLE, Team.RED))
@@ -227,7 +218,6 @@ class GameViewModelTest {
 
     @Test
     fun testClearBags() {
-//        val viewModel = GameViewModel()
 
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.IN_HOLE, Team.RED))
         viewModel.onBagMoved(BagMovedEvent(BagStatus.IN_HAND, BagStatus.OFF_BOARD, Team.BLUE))
