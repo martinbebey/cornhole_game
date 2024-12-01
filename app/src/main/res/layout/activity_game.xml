@@ -23,6 +23,26 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <Button
+        android:id="@+id/undoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UNDO"
+        app:layout_constraintTop_toBottomOf="@id/rulesModeRadioGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
+
+    <Button
+        android:id="@+id/redoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="REDO"
+        app:layout_constraintTop_toBottomOf="@id/rulesModeRadioGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
+
     <View
         android:elevation="@dimen/xxxsmall"
         android:layout_height="0.5dp"

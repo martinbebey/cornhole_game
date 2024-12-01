@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.Stack
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
@@ -22,6 +23,8 @@ class GameViewModel @Inject constructor(
 ) : ViewModel(), FieldView.BagListener {
 
     private val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+
+    private  val gameStatePlaceHolder = Stack<GameState>()
 
     // LiveData to hold the game state
     private val _gameState: MutableLiveData<GameState> = MutableLiveData()
@@ -88,6 +91,20 @@ class GameViewModel @Inject constructor(
         saveGameStateToDatabase(_gameState.value)
     }
 
+    fun undo(){
+        if(!gameStatePlaceHolder.isEmpty()) {
+            gameStatePlaceHolder.pop()
+
+            if(!gameStatePlaceHolder.isEmpty()) {
+                _gameState.value = gameStatePlaceHolder.peek()
+            }
+        }
+    }
+
+    fun redo(){
+        gameStatePlaceHolder.push(_gameState.value)
+    }
+
     // Fetches the selected game rule from sharedPreferences
     fun loadRulesMode() {
 
@@ -116,6 +133,11 @@ class GameViewModel @Inject constructor(
 
     // Save the game state to the database
     private fun saveGameStateToDatabase(gameState: GameState?) {
+
+        if (gameState != null) {
+            gameStatePlaceHolder.push(gameState)
+        }
+
         gameState?.let {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.saveGameState(it)

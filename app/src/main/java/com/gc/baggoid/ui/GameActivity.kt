@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,17 @@ class GameActivity : AppCompatActivity(R.layout.activity_game) {
         setContentView(binding.root)
         setupViews()
         setupStateObservers()
+
+        val undoButton: Button = findViewById(R.id.undoButton)
+        val redoButton: Button = findViewById(R.id.redoButton)
+
+        undoButton.setOnClickListener {
+            viewModel.undo()
+        }
+
+        redoButton.setOnClickListener {
+            viewModel.redo()
+        }
     }
 
     override fun onResume() {
@@ -67,6 +79,8 @@ class GameActivity : AppCompatActivity(R.layout.activity_game) {
         binding.blueRoundScoreView.setBagsPerRound(BAGS_PER_ROUND)
         binding.fieldView.bagListener = viewModel
 
+
+
         viewModel.currentTeam.observe(this) { currentTeam ->
             binding.fieldView.setCurrentTeam(currentTeam)
         }
@@ -74,6 +88,7 @@ class GameActivity : AppCompatActivity(R.layout.activity_game) {
 
     private fun setupStateObservers() {
         viewModel.gameState.observe(this) { gameState ->
+
             updateScoreboard(gameState)
         }
 
