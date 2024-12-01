@@ -4,4 +4,7 @@ GC Baggoid is a simple Cornhole scoring application. Cornhole is a game where te
 
 You can check the full rules of Cornhole in http://www.cornholehowto.com/how-to-play/.
 
-The requirements for the at-home interview exercise can be found from the issues tab in GitHub. 
+
+
+https://github.com/user-attachments/assets/5d939b3c-a286-4b3d-a930-6ae8aaa1ac2b
+
